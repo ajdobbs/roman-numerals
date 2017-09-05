@@ -5,11 +5,8 @@ def roman_numeral_to_int(numeral):
     """ Function to convert an input roman numeral string to an integer. """
 
     # Check the argument is a non-zero length string derivative
-    if not isinstance(numeral, str):
-        print 'Argument not a string, aborting'
-        return 0
-    if len(numeral) == 0:
-        print 'String is empty, aborting'
+    if (not isinstance(numeral, str)) or (len(numeral) == 0):
+        print 'Argument not a non-zero string, aborting'
         return 0
 
     # Make a dict mapping single numerals to their decimal values
@@ -17,31 +14,19 @@ def roman_numeral_to_int(numeral):
          'l': 50, 'C': 100, 'c': 100, 'D': 500, 'd': 500, 'M': 1000, 'm': 1000}
 
     # Check the string contains no invalid characters
-    for s in numeral:
-        if not s in values:
-            print 'Invalid character supplied, ',
-            print 'please use only I, V, X, L, C, D and M'
-            return 0
+    if not all(s in values for s in numeral):
+        print 'Invalid character supplied, use only I, V, X, L, C, D and M'
+        return 0
 
-    # Perform the conversion, looping over each character in the string
-    accumulator = 0
-    i = 0
-    while i < len(numeral):
-        # Are we on the last character (i.e. we can't peep ahead)?
-        if i == len(numeral) - 1:
-            accumulator += values[numeral[i]]
-            break
-        # Check if we need to do a subtraction e.g. for IX = 9
-        if values[numeral[i]] < values[numeral[i+1]]:
-            accumulator += values[numeral[i+1]] - values[numeral[i]]
-            i += 1 # Skip the next character as we have already used it
-        # Otherwise just add the decimal value to the accumulator
-        else:
-            accumulator += values[numeral[i]]
-        i += 1
-        print str(i) + ' ' + str(accumulator)
+    # Convert each character to decimal and put in a list
+    decimals = [values[s] for s in numeral]
+
+    # Sum up elements, make -ve if the element is less than the following element
+    accumulator = sum([x if x >= y else -x for x, y in zip(decimals, decimals[1:])])
+    accumulator += decimals[-1] # zip misses the last element, which is always +ve
 
     return accumulator
+
 
 if __name__ == "__main__":
     args = sys.argv
@@ -50,3 +35,4 @@ if __name__ == "__main__":
     else:
         args.pop(0)
         ans = roman_numeral_to_int(args[0])
+        print ans
