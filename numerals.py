@@ -21,12 +21,17 @@ def roman_numeral_to_int(numeral):
     # Convert each character to decimal and put in a list
     decimals = [values[s] for s in numeral]
 
+    # Check the numeral was correctly formatted e.g. IIV is not allowed
+    # print zip(decimals, decimals[1:], decimals[2:])
+    if any((z > y and y >= x) for x,y,z in zip(decimals, decimals[1:], decimals[2:])):
+        print 'Incorrectly formatted numeral, aborting'
+        return 0
+
     # Sum up elements, make -ve if the element is less than the following element
     accumulator = sum([x if x >= y else -x for x, y in zip(decimals, decimals[1:])])
-    accumulator += decimals[-1] # zip misses the last element, which is always +ve
+    accumulator += decimals[-1] # add the last element, which is always +ve
 
     return accumulator
-
 
 if __name__ == "__main__":
     args = sys.argv
