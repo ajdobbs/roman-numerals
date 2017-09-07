@@ -2,7 +2,9 @@
 import sys
 
 def roman_numeral_to_int(numeral):
-    """ Function to convert an input roman numeral string to an integer. """
+    """ Function to convert an input roman numeral string to an integer.
+        Some format checking is done on the input numeral, though it is
+        not exhaustive. """
 
     # Check the argument is a non-zero length string derivative
     if (not isinstance(numeral, str)) or (len(numeral) == 0):
@@ -18,16 +20,15 @@ def roman_numeral_to_int(numeral):
         print 'Invalid character supplied, use only I, V, X, L, C, D and M'
         return 0
 
-    # Convert each character to decimal and put in a list
+    # Convert each character to a decimal and put in a list
     decimals = [values[s] for s in numeral]
 
     # Check the numeral was correctly formatted e.g. IIV is not allowed
-    # print zip(decimals, decimals[1:], decimals[2:])
     if any((z > y and y >= x) for x,y,z in zip(decimals, decimals[1:], decimals[2:])):
         print 'Incorrectly formatted numeral, aborting'
         return 0
 
-    # Sum up elements, make -ve if the element is less than the following element
+    # Sum up the elements, make -ve if the element is less than the following element
     accumulator = sum([x if x >= y else -x for x, y in zip(decimals, decimals[1:])])
     accumulator += decimals[-1] # add the last element, which is always +ve
 
